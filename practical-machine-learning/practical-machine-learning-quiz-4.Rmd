@@ -1,0 +1,57 @@
+---
+title: "Practical Machine Learning Quiz 4"
+date: "5/20/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(gbm)
+library(plyr)
+library(caret)
+```
+
+## Question 1
+
+Load the vowel.train and vowel.test data sets:
+
+```{r }
+
+library(ElemStatLearn)
+
+data(vowel.train)
+
+data(vowel.test)
+
+```
+
+Set the variable y to be a factor variable in both the training and test set. Then set the seed to 33833. Fit (1) a random forest predictor relating the factor variable y to the remaining variables and (2) a boosted predictor using the "gbm" method. Fit these both with the train() command in the caret package.
+
+What are the accuracies for the two approaches on the test data set? What is the accuracy among the test set samples where the two methods agree?
+
+```{r echo=FALSE}
+vowel.test$y <- as.factor(vowel.test$y)
+vowel.train$y <- as.factor(vowel.train$y)
+set.seed(33833)
+
+rffit <- train(y ~ ., data = vowel.train, method = "rf")
+gbmfit <- train(y ~ ., data = vowel.train, method = "gbm")
+```
+
+Fitting done. 
+
+```{r}
+rfresult <- predict(rffit,vowel.test)
+gbmresult <- predict(gbmfit,vowel.test)
+
+rf_accuracy <- sum((rfresult == vowel.test$y))/length(vowel.test$y)
+gbm_accuracy <- sum((gbmresult == vowel.test$y))/length(vowel.test$y)
+rf_gbm_match <- sum(rfresult == gbmresult)/length(rfresult)
+
+
+rf_accuracy
+gbm_accuracy
+rf_gbm_match
+```
+
+
